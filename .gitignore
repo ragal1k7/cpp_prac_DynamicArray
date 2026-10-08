@@ -1,0 +1,7 @@
+.DS_Store
+
+*.o
+*.out
+dynamic_array_demo
+main
+build/
