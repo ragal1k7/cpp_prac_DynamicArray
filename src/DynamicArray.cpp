@@ -5,19 +5,19 @@
 
 void DynamicArray::validateValue(int value) {
     if (value < -100 || value > 100) {
-        throw std::out_of_range("Value must be in the range [-100, 100]");
+        throw std::invalid_argument("Значение должно быть в диапазоне [-100, 100]");
     }
 }
 
 void DynamicArray::validateIndex(int index) const {
     if (index < 0 || index >= size_) {
-        throw std::out_of_range("Array index is out of range");
+        throw std::out_of_range("Индекс массива вне допустимого диапазона");
     }
 }
 
 DynamicArray::DynamicArray(int size) : data_(nullptr), size_(size) {
     if (size < 0) {
-        throw std::invalid_argument("Array size cannot be negative");
+        throw std::invalid_argument("Размер массива не может быть отрицательным");
     }
     if (size_ > 0) {
         data_ = new int[size_]{};
