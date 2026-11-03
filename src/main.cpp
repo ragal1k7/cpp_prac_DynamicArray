@@ -52,9 +52,9 @@ int main() {
             std::cout << "Поймано invalid_argument: " << e.what() << "\n";
         }
 
-        try {
+         try {
             std::cout << "Попытка выделить огромный массив...\n";
-            DynamicArray hugeArray(2000000000); 
+            DynamicArray hugeArray(2147483647); 
         } catch (const std::bad_alloc& e) {
             std::cout << "Поймано bad_alloc: " << e.what() << "\n";
         }
