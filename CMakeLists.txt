@@ -7,7 +7,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_executable(dynamic_array_demo
     src/main.cpp
-    src/DynamicArray.cpp
 )
 
 target_include_directories(dynamic_array_demo PRIVATE include)
