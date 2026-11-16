@@ -1,64 +1,42 @@
 #include "../include/DynamicArray.h"
 #include <iostream>
+#include <utility> // для std::move
+
+// Функция, принимающая массив по значению (для демонстрации)
+void processArrayByValue(DynamicArray<int> arr) {
+    std::cout << "  [Внутри функции] Размер полученного массива: " << arr.size() << "\n";
+}
 
 int main() {
     try {
-        std::cout << "Часть 4: Операторы \n\n";
+        std::cout << "=== Часть 5: Правило пяти ===\n\n";
 
+        // Задание 1: Копирующее присваивание 
+        std::cout << "1. Оператор присваивания копированием:\n";
         DynamicArray<int> a(3);
-        DynamicArray<int> b(3);
-
-        // 1. Демонстрация оператора []
-        std::cout << "1. Оператор []:\n";
-        a[0] = 10; 
-        a[1] = 20;
-        a[2] = 30;
+        a[0] = 1; a[1] = 2; a[2] = 3;
+        
+        DynamicArray<int> b(5);
+        b = a;
         std::cout << "Массив a: " << a << "\n";
-        std::cout << "Чтение a[1]: " << a[1] << "\n";
+        std::cout << "Массив b (скопирован из a): " << b << "\n\n";
 
-        b[0] = 10;
-        b[1] = 20;
-        b[2] = 30;
-
-        // 2. Демонстрация == и !=
-        std::cout << "\n2. Операторы сравнения:\n";
-        std::cout << "a == b: " << (a == b ? "Истина" : "Ложь") << "\n";
-        b[0] = 99;
-        std::cout << "Изменили b[0]. Теперь a == b: " << (a == b ? "Истина" : "Ложь") << "\n";
-        std::cout << "a != b: " << (a != b ? "Истина" : "Ложь") << "\n";
-
-        // 3. Демонстрация += и -=
-        std::cout << "\n3. Составные операторы:\n";
-        DynamicArray<int> c(4);
-        c[0] = 1; c[1] = 2; c[2] = 3; c[3] = 4;
+        // Задание 4: Демонстрация копирования vs Перемещения 
+        std::cout << "2. Передача по значению (Копирование):\n";
+        std::cout << "Копируем массив a в функцию...\n";
+        processArrayByValue(a); 
         
-        std::cout << "Массив c до: " << c << "\n";
-        c += 5; 
-        std::cout << "c += 5: " << c << "\n";
+        std::cout << "\n3. Передача по значению (Перемещение / Move):\n";
+        std::cout << "Перемещаем массив b в функцию с помощью std::move...\n";
+        processArrayByValue(std::move(b)); 
         
-        c -= 1; 
-        std::cout << "c -= 1: " << c << "\n";
+        std::cout << "Массив b после move: " << b << " (размер: " << b.size() << ")\n\n";
 
-        DynamicArray<int> d(2);
-        d[0] = 10; d[1] = 10;
-        c += d;
-        std::cout << "c += d (d размера 2): " << c << "\n";
-
-        // 4. Демонстрация итераторов
-        std::cout << "\n4. Итераторы (range-based for):\n";
-        std::cout << "Умножаем все элементы c на 2 через цикл for...\n";
-        for (auto& x : c) {
-            x *= 2;
-        }
-        std::cout << "Массив c после: " << c << "\n";
-
-        // Проверка выброса исключения при выходе за границы
-        try {
-            std::cout << "\nПопытка a[99] = 5...\n";
-            a[99] = 5;
-        } catch (const std::out_of_range& e) {
-            std::cout << "Поймано исключение: " << e.what() << "\n";
-        }
+        std::cout << "4. Проверка самоприсваивания:\n";
+        DynamicArray<int> c(2);
+        c[0] = 10; c[1] = 20;
+        c = c; 
+        std::cout << "Массив c после c = c: " << c << "\n";
 
     } catch (const std::exception& error) {
         std::cerr << "Неожиданная ошибка: " << error.what() << "\n";

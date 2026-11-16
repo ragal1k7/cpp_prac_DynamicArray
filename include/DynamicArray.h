@@ -4,6 +4,7 @@
 #include <type_traits>
 #include <typeinfo>
 #include <cmath>
+#include <utility> 
 
 template <typename T>
 class DynamicArray {
@@ -35,6 +36,7 @@ public:
         }
     }
 
+    // 1. Конструктор копирования 
     DynamicArray(const DynamicArray& other) : data_(nullptr), size_(other.size_) {
         if (size_ > 0) {
             data_ = new T[size_];
@@ -44,23 +46,67 @@ public:
         }
     }
 
+    // 2. Оператор присваивания копированием (Задание 1)
+    DynamicArray& operator=(const DynamicArray& other) {
+        if (this == &other) {
+            return *this; 
+        }
+        
+        T* newData = nullptr;
+        if (other.size_ > 0) {
+            newData = new T[other.size_];
+            for (int i = 0; i < other.size_; ++i) {
+                newData[i] = other.data_[i];
+            }
+        }
+        
+        delete[] data_;
+        data_ = newData;
+        size_ = other.size_;
+        
+        return *this;
+    }
+
+    // 3. Move-конструктор (Задание 2)
+    DynamicArray(DynamicArray&& other) noexcept 
+        : data_(other.data_), size_(other.size_) {
+        // Забираем ресурсы, а источник обнуляем
+        other.data_ = nullptr;
+        other.size_ = 0;
+    }
+
+    // 4. Move-оператор присваивания (Задание 3)
+    DynamicArray& operator=(DynamicArray&& other) noexcept {
+        if (this == &other) {
+            return *this;
+        }
+        
+        delete[] data_;
+        
+        data_ = other.data_;
+        size_ = other.size_;
+        
+        other.data_ = nullptr;
+        other.size_ = 0;
+        
+        return *this;
+    }
+
     ~DynamicArray() {
         delete[] data_;
     }
 
-    // Задание 1: Оператор [] через класс-посредник 
+    // Всё, что было в Части 4
     class Proxy {
     private:
         DynamicArray& arr_;
         int index_;
     public:
         Proxy(DynamicArray& arr, int index) : arr_(arr), index_(index) {}
-        
         Proxy& operator=(const T& value) {
             arr_.set(index_, value);
             return *this;
         }
-        
         operator T() const {
             return arr_.get(index_);
         }
@@ -76,7 +122,6 @@ public:
         return data_[index];
     }
 
-    // Задание 2: Операторы сравнения 
     bool operator==(const DynamicArray& other) const {
         if (size_ != other.size_) return false;
         for (int i = 0; i < size_; ++i) {
@@ -89,7 +134,6 @@ public:
         return !(*this == other);
     }
 
-    // Задание 3: Составные операторы 
     DynamicArray& operator+=(const DynamicArray& other) {
         for (int i = 0; i < size_; ++i) {
             T otherValue = i < other.size_ ? other.data_[i] : T{};
@@ -122,7 +166,6 @@ public:
         return *this;
     }
 
-    // Задание 4: Итераторы
     T* begin() { return data_; }
     T* end() { return data_ + size_; }
     const T* begin() const { return data_; }
