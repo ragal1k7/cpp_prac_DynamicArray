@@ -1,68 +1,68 @@
 #include "../include/DynamicArray.h"
-
 #include <iostream>
-#include <stdexcept>
-#include <new>
 
 int main() {
     try {
-        DynamicArray arrayA(3);
-        arrayA.set(0, 10);
-        arrayA.set(1, 20);
-        arrayA.set(2, 30);
-        std::cout << "Массив arrayA: ";
-        arrayA.print();
-        std::cout << "arrayA[1] = " << arrayA.get(1) << "\n";
+        std::cout << "Часть 4: Операторы \n\n";
 
-        DynamicArray copiedArray(arrayA);
-        copiedArray.set(0, -10);
-        std::cout << "Скопированный массив: ";
-        copiedArray.print();
-        std::cout << "Оригинальный массив: ";
-        arrayA.print();
+        DynamicArray<int> a(3);
+        DynamicArray<int> b(3);
 
-        arrayA.append(40);
-        std::cout << "arrayA после добавления 40: ";
-        arrayA.print();
+        // 1. Демонстрация оператора []
+        std::cout << "1. Оператор []:\n";
+        a[0] = 10; 
+        a[1] = 20;
+        a[2] = 30;
+        std::cout << "Массив a: " << a << "\n";
+        std::cout << "Чтение a[1]: " << a[1] << "\n";
 
-        DynamicArray arrayB(2);
-        arrayB.set(0, 1);
-        arrayB.set(1, 2);
-        arrayA.add(arrayB);
-        std::cout << "arrayA после сложения с arrayB: ";
-        arrayA.print();
+        b[0] = 10;
+        b[1] = 20;
+        b[2] = 30;
+
+        // 2. Демонстрация == и !=
+        std::cout << "\n2. Операторы сравнения:\n";
+        std::cout << "a == b: " << (a == b ? "Истина" : "Ложь") << "\n";
+        b[0] = 99;
+        std::cout << "Изменили b[0]. Теперь a == b: " << (a == b ? "Истина" : "Ложь") << "\n";
+        std::cout << "a != b: " << (a != b ? "Истина" : "Ложь") << "\n";
+
+        // 3. Демонстрация += и -=
+        std::cout << "\n3. Составные операторы:\n";
+        DynamicArray<int> c(4);
+        c[0] = 1; c[1] = 2; c[2] = 3; c[3] = 4;
         
-        arrayA.subtract(arrayB);
-        std::cout << "arrayA после вычитания arrayB: ";
-        arrayA.print();
+        std::cout << "Массив c до: " << c << "\n";
+        c += 5; 
+        std::cout << "c += 5: " << c << "\n";
+        
+        c -= 1; 
+        std::cout << "c -= 1: " << c << "\n";
 
-        std::cout << "\n--- Демонстрация исключений ---\n";
+        DynamicArray<int> d(2);
+        d[0] = 10; d[1] = 10;
+        c += d;
+        std::cout << "c += d (d размера 2): " << c << "\n";
 
+        // 4. Демонстрация итераторов
+        std::cout << "\n4. Итераторы (range-based for):\n";
+        std::cout << "Умножаем все элементы c на 2 через цикл for...\n";
+        for (auto& x : c) {
+            x *= 2;
+        }
+        std::cout << "Массив c после: " << c << "\n";
+
+        // Проверка выброса исключения при выходе за границы
         try {
-            std::cout << "Попытка вызвать get(99)...\n";
-            arrayA.get(99);
+            std::cout << "\nПопытка a[99] = 5...\n";
+            a[99] = 5;
         } catch (const std::out_of_range& e) {
-            std::cout << "Поймано out_of_range: " << e.what() << "\n";
-        }
-
-        try {
-            std::cout << "Попытка вызвать set(0, 150)...\n";
-            arrayA.set(0, 150);
-        } catch (const std::invalid_argument& e) {
-            std::cout << "Поймано invalid_argument: " << e.what() << "\n";
-        }
-
-         try {
-            std::cout << "Попытка выделить огромный массив...\n";
-            DynamicArray hugeArray(2147483647); 
-        } catch (const std::bad_alloc& e) {
-            std::cout << "Поймано bad_alloc: " << e.what() << "\n";
+            std::cout << "Поймано исключение: " << e.what() << "\n";
         }
 
     } catch (const std::exception& error) {
         std::cerr << "Неожиданная ошибка: " << error.what() << "\n";
         return 1;
     }
-
     return 0;
 }
